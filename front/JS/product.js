@@ -48,25 +48,22 @@ afficherLeProduit();
 
 // Envoyer les informations Page Produit vers Page Panier 
 
-
 // Etape 7 :  Ajouter des produits dans le panier
 
 
 // Bouton ("Ajouter au panier") séléctionner => id 
 let cartButton = document.getElementById ("addToCart");
 
-// Déclarations des variables couleur et quantité => depuis l'id
-let colorChoice = document. querySelector("#colors").value;
-let productQuantity = document.querySelector("#quantity").value;
-
 // Evènement lors du clique sur le bouton pour ajouter dans le panier 
 cartButton.addEventListener("click", (e) => {
+
+
     // Créer une alerte si une couleur n'est pas séléctionner et si une quantité est égal à 0 et supérieur à 100
-    if (document.querySelector("#colors").value !== "") {
+    if (document.querySelector("#colors").value == "") {
         alert("Veuillez sélectionnez une couleur");
         e.preventDefault();
     } 
-    if (document.querySelector("#quantity").value == 0) {
+    if (document.querySelector("#quantity").value == "0") {
         alert("Veuillez sélectionnez une quantité");
         e.preventDefault();
     } 
@@ -74,7 +71,6 @@ cartButton.addEventListener("click", (e) => {
         alert("Vous ne pouvez pas séléctionner cette quantité");
         e.preventDefault();
     }
-    // Si la quantité n'est pas supérieur ou égal à 0 et supérieur à 100 et la couleur n'a de valeur défini (choix des couleurs proposés) => on affiche le message suivant
     else {
         // Séléction de tous les éléemnts qui vont être dans le panier
         let image = document.querySelector("body > main > div > section > article > div.item__img > img").src;
@@ -84,8 +80,8 @@ cartButton.addEventListener("click", (e) => {
         let productID = idProduct;
         let colorChoice = document. querySelector("#colors").value;
         // Passe la quantité en nombre
-        let productQuantity = document.querySelector("#quantity").value;
-        let qantity = Number(productQuantity );
+        let producQuantity = document.querySelector("#quantity").value;
+        let qantity = Number(producQuantity );
 
         // Boucle pour permettre de savoir si on met le même produit dans le panier (même id + même couleur)
         //pour tester la boucle et l'arreter
@@ -94,7 +90,7 @@ cartButton.addEventListener("click", (e) => {
         // LocalStorage =>
 
         // ajout des elt du panier dans un tableau
-        let eltPanier = [{ image, imageAlt, name, productID, colorChoice, qantity }];
+        let eltPanier = [{ image, imageAlt, name, price, productID, colorChoice, qantity }];
 
         // On va vérifier si il y a quelque chose dans le localStorage 
         let produitTableau = JSON.parse(localStorage.getItem("produit"));
