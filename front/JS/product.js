@@ -59,16 +59,8 @@ cartButton.addEventListener("click", (e) => {
 
 
     // Créer une alerte si une couleur n'est pas séléctionner et si une quantité est égal à 0 et supérieur à 100
-    if (document.querySelector("#colors").value == "") {
-        alert("Veuillez sélectionnez une couleur");
-        e.preventDefault();
-    } 
-    if (document.querySelector("#quantity").value == "0") {
-        alert("Veuillez sélectionnez une quantité");
-        e.preventDefault();
-    } 
-    if (document.querySelector("#quantity").value > 100) {
-        alert("Vous ne pouvez pas séléctionner cette quantité");
+    if (document.querySelector("#quantity").value !== 0 || document.querySelector("#quantity").value > 100 && document.querySelector("#colors").value !== "") {
+        alert("Veuillez s");
         e.preventDefault();
     }
     else {
@@ -96,7 +88,7 @@ cartButton.addEventListener("click", (e) => {
         let produitTableau = JSON.parse(localStorage.getItem("produit"));
         
         //Si le localstorage est vide, on créer tableau, on met tout les élément dans le panier (push) et on stock dans localStorage
-        if (produitTableau == null) {
+        if (!produitTableau) {
             produitTableau= []; // Créaction du tableau
             produitTableau.push(eltPanier); 
             localStorage.setItem("produit", JSON.stringify(produitTableau));
