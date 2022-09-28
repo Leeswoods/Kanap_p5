@@ -60,7 +60,7 @@ cartButton.addEventListener("click", (e) => {
 
     // Créer une alerte si une couleur n'est pas séléctionner et si une quantité est égal à 0 et supérieur à 100
     if (document.querySelector("#quantity").value !== 0 || document.querySelector("#quantity").value > 100 && document.querySelector("#colors").value !== "") {
-        alert("Veuillez s");
+        alert("Veuillez saisir une valeur");
         e.preventDefault();
     }
     else {
@@ -81,7 +81,7 @@ cartButton.addEventListener("click", (e) => {
     
         // LocalStorage =>
 
-        // ajout des elt du panier dans un tableau
+        // ajout des élement du panier dans un tableau
         let eltPanier = [{ image, imageAlt, name, price, productID, colorChoice, qantity }];
 
         // On va vérifier si il y a quelque chose dans le localStorage 
