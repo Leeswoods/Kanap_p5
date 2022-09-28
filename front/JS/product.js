@@ -59,7 +59,7 @@ cartButton.addEventListener("click", (e) => {
 
 
     // Créer une alerte si une couleur n'est pas séléctionner et si une quantité est égal à 0 et supérieur à 100
-    if (document.querySelector("#quantity").value !== 0 || document.querySelector("#quantity").value > 100 && document.querySelector("#colors").value !== "") {
+    if (document.querySelector("#quantity").value == 0 || document.querySelector("#quantity").value > 100 && document.querySelector("#colors").value !== "") {
         alert("Veuillez saisir une valeur");
         e.preventDefault();
     }
