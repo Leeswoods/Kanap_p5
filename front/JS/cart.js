@@ -65,7 +65,7 @@ afficherPanier();
 
   // SELECTION DE L'ELEMENT A SUPPRIMER DANS LE TABLEAU Panier
   // Première étape on va crée une fonction 
-  // Ensuite on va crée un tableau "buttons" dans cette fonction
+  // Ensuite on va crée un tableau "button" dans cette fonction
   // On va chercher l'id et la couleur du produit présent dans la classe .deleteItem et le compare au produit présent dans le panier (LocalStorage)
   // On filtre le produit trouvé et on le supprime du tableau panier 
   // On enregistre le panier dans le localStorage et on rafraichit la page
@@ -93,3 +93,34 @@ function deleteProducts() {
 }
 deleteProducts();
 
+
+// GERER LA MODIFICATION DE PRODUITS DANS LA PAGE PANIER 
+
+  // Modification de la quantité avec l'input
+  // Première étape on va crée une fonction 
+  // Ensuite on va crée un tableau "input" dans cette fonction
+  // On va chercher l'id et la couleur du produit présent dans la classe .itemQuantity et le compare au produit présent dans le panier (LocalStorage)
+  // On crée une nouvelle fiche produit avec la quantité mise à jour
+  // On met à jour ce produit dans panier (LocalStorage)
+  // On enregistre le panier dans le localStorage et on rafraichit la page
+  // Sa envoie une alerte
+
+let quantityProduct = document.querySelectorAll(".itemQuantity");
+
+function modifyQuantitye() {
+  for (let input of Array.from (quantityProduct)) {
+    input.addEventListener("change", e => {
+      let productID = e.target.getAttribute("productID");
+      let colorChoice = e.target.getAttribute("colorChoice");
+      const modify = panier.find(element => element.id == productID && element.couleur == colorChoice);
+      modify.qantity = input.value;
+      panier = modify;
+      localStorage.setItem("produit", JSON.stringify(panier));
+
+      alert("La quantité du produit a bien été modifié");
+
+      location.reload()
+    })
+  }
+}
+modifyQuantity();
