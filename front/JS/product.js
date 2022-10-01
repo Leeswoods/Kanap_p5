@@ -73,7 +73,7 @@ cartButton.addEventListener("click", (e) => {
         let colorChoice = document. querySelector("#colors").value;
         // Passe la quantité en nombre
         let producQuantity = document.querySelector("#quantity").value;
-        let qantity = Number(producQuantity );
+        let quantity = Number(producQuantity );
 
         // Boucle pour permettre de savoir si on met le même produit dans le panier (même id + même couleur)
         //pour tester la boucle et l'arreter
@@ -82,7 +82,7 @@ cartButton.addEventListener("click", (e) => {
         // LocalStorage =>
 
         // ajout des élement du panier dans un tableau
-        let eltPanier = [{ image, imageAlt, name, price, productID, colorChoice, qantity }];
+        let eltPanier = [{ image, imageAlt, name, price, productID, colorChoice, quantity }];
 
         // On va vérifier si il y a quelque chose dans le localStorage 
         let produitTableau = JSON.parse(localStorage.getItem("produit"));
@@ -97,7 +97,7 @@ cartButton.addEventListener("click", (e) => {
         else {
             for (let i = 0; i < produitTableau.length; i++) {
                 if (produitTableau[i][0].name === name && produitTableau[i][0].colorChoice === colorChoice) {
-                    produitTableau[i][0].qantity += qantity;
+                    produitTableau[i][0].quantity += quantity;
                     boucle = 1;
                 }
             }
@@ -109,10 +109,10 @@ cartButton.addEventListener("click", (e) => {
             localStorage.setItem("produit", JSON.stringify(produitTableau));
         }
         // Alerte sur la quantité mise dans le panier
-        if (qantity > 1) {
-            alert(`Vous avez ajouté ${qantity} articles au panier`);
-        } else if (qantity == 1) {
-            alert(`Vous avez ajouté ${qantity} article au panier`);
+        if (quantity > 1) {
+            alert(`Vous avez ajouté ${quantity} articles au panier`);
+        } else if (quantity == 1) {
+            alert(`Vous avez ajouté ${quantity} article au panier`);
         }
     }
 });

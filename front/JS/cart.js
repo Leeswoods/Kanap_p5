@@ -30,7 +30,7 @@ function afficherPanier() {
     // Si il y a un ou plusieurs éléments dans le panier
     else {
         for (let i = 0; i < panier.length; i++) {
-            messagePanier.innerHTML += `
+          document.querySelector("#cart__items").innerHTML += `
             <article class="cart__item" data-id="${panier[i][0].idProduct}">
                 <div class="cart__item__img">
                   <img src="${panier[i][0].image}" alt="${panier[i][0].imageAlt}">
@@ -42,15 +42,15 @@ function afficherPanier() {
                     <p>${panier[i][0].price}</p>
                   </div>
                   <div class="cart__item__content__settings">
-                    <div class="cart__item__content__settings__quantity">
-                      <p>Qté : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${panier[i][0].qantity}">
-                    </div>
-                    <div class="cart__item__content__settings__delete">
-                      <p class="deleteItem">Supprimer</p>
-                    </div>
+                  <div class="cart__item__content__settings__quantity">
+                      <p>Qté :</p>
+                      <input index="${[i]}" onchange="getNewQty(this)" id="cartQty" type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${panier[i][0].quantity}">
                   </div>
-                </div>
+                  <div class="cart__item__content__settings__delete">
+                    <p product="${[i]}" onclick="deleteProducts(this)" class="deleteItem">Supprimer</p>
+                  </div>
+              </div>
+          </div>
               </article>`;
         }
     }
@@ -59,68 +59,92 @@ afficherPanier();
 
 // Etape 9 :  Gérer la modification et la suppression de produits dans la page Panier
 
+  
 
+  
+  
 // GERER LA SUPRESSION DE PRODUITS DANS LA PAGE PANIER  
-
-
-  // SELECTION DE L'ELEMENT A SUPPRIMER DANS LE TABLEAU Panier
-  // Première étape on va crée une fonction 
-  // Ensuite on va crée un tableau "button" dans cette fonction
-  // On va chercher l'id et la couleur du produit présent dans la classe .deleteItem et le compare au produit présent dans le panier (LocalStorage)
-  // On filtre le produit trouvé et on le supprime du tableau panier 
+  
+// Supression de la ligne  au clic du bouton supprimer 
+  // Première étape on va crée une fonction deleteProducts qui est une class évènement => onclick="deleteProducts(this)"
+  // On va chercher l'attribut "product" qui se trouve dans l'input et qu'on a crée pour l'occassion
+  // Grâce à la méthode splice on va modifié le contenu d'un tableau donc celui de "panier" en retirant des éléments
   // On enregistre le panier dans le localStorage et on rafraichit la page
   // Sa envoie une alerte
 
-  // Délcaration Variable => Séléction de class "Supprimer" => Gestion Bouton "Supprimer"
 
-let deleteBtn = document.querySelectorAll(".deleteItem");
-
-
-function deleteProducts() {
-  for (let button of Array.from(deleteBtn)){
-    button.addEventListener("click", e =>{
-      let productID = e.target.getAttribute("productID");
-      let colorChoice = e.target.getAttribute("colorChoice");
-      const searchDeleteItem = panier.find(element => element.id == productID && element.couleur == colorChoice);
-      panier = panier.filter(item => item != searchDeleteItem);
-      localStorage.setItem("produit", JSON.stringify(panier));
-
-      alert("Ce produit a bien été supprimé du panier");
-
-      location.reload()
-    })
-  }
+function deleteProducts(e) {
+  let product = e.getAttribute("product");
+  panier.splice(product, 1);
+  localStorage.setItem("produit", JSON.stringify(panier));
+  alert("Ce produit a bien été supprimé du panier");
+  location.reload();
 }
-deleteProducts();
-
 
 // GERER LA MODIFICATION DE PRODUITS DANS LA PAGE PANIER 
 
-  // Modification de la quantité avec l'input
-  // Première étape on va crée une fonction 
-  // Ensuite on va crée un tableau "input" dans cette fonction
-  // On va chercher l'id et la couleur du produit présent dans la classe .itemQuantity et le compare au produit présent dans le panier (LocalStorage)
-  // On crée une nouvelle fiche produit avec la quantité mise à jour
-  // On met à jour ce produit dans panier (LocalStorage)
+  // Première étape on va crée une fonction qui est une class évènement => onchange="getNewQty(this)"
+  // On va chercher l'attribut "index" qui se trouve dans l'input et qu'on a crée pour l'occassion
+  // On va crée une variable qui signifie que newQuantity renvoie une valeur
+  // On dit que le panier (localStorage) égal la variable newQuantity
+  // Sa envoie une alerte que la quantité a bien été modifié 
+  // Si la newQuantity est égale à 0 : on utilise la méthode splice on va modifié le contenu d'un tableau donc celui de "panier" en retirant des éléments
+  // Donc si la quantité est de 1 et qu'on la passe à 0 alors le produit
+  // On envoie une alerte que la quantité a été modifié
   // On enregistre le panier dans le localStorage et on rafraichit la page
-  // Sa envoie une alerte
+  // Sinon on va chercher l'id totalQuantity et totalPrice
+  // On enregistre le panier dans le localStorage et on rafraichit la page
 
-let quantityProduct = document.querySelectorAll(".itemQuantity");
+function getNewQty(e) {
+  let index = e.getAttribute("index");
+  let newQuantity = e.value;
+  panier[index][0].quantity = newQuantity ;
+  alert("La quantité du produit a bien été modifié");
 
-function modifyQuantitye() {
-  for (let input of Array.from (quantityProduct)) {
-    input.addEventListener("change", e => {
-      let productID = e.target.getAttribute("productID");
-      let colorChoice = e.target.getAttribute("colorChoice");
-      const modify = panier.find(element => element.id == productID && element.couleur == colorChoice);
-      modify.qantity = input.value;
-      panier = modify;
-      localStorage.setItem("produit", JSON.stringify(panier));
-
-      alert("La quantité du produit a bien été modifié");
-
-      location.reload()
-    })
+  if (newQuantity  == 0) {
+    panier.splice(index, 1);
+    localStorage.setItem("produit", JSON.stringify(panier));
+    alert("Le produit a été supprimé du panier");
+    location.reload();
+  } else {
+    document.querySelector("#totalQuantity").innerHTML = totalQty();
+    document.querySelector("#totalPrice").innerHTML = totalPrice();
+    localStorage.setItem("produit", JSON.stringify(panier));
   }
 }
-modifyQuantity();
+
+// Calcul du total prix
+
+  // Première étape on va crée une fonction 
+  // On va crée une variable qui signifie que totalprix est égale à 0 et renvoie la valeur 0
+  // On crée une boucle 
+
+function totalPrice() {
+  let totalprix = 0;
+  for (let i = 0; i < panier.length; i++) {
+      let quantity = parseInt(panier[i][0].quantity);
+      let prix = parseInt(panier[i][0].price);
+      totalprix += prix * quantity;
+  }
+  return totalprix;
+}
+// affichage du total prix
+document.querySelector("#totalPrice").innerHTML = totalPrice();
+
+// Calcul du total quantité(s)
+
+  // Première étape on va crée une fonction 
+  // On va crée une variable qui signifie que totalqty est égale à 0 et renvoie la valeur 0
+  // On crée une boucle 
+
+function totalQty() {
+  let totalqty = 0;
+  for (let i = 0; i < panier.length; i++) {
+      let quantity = parseInt(panier[i][0].quantity);
+      totalqty += quantity;
+  }
+  return totalqty;
+}
+
+// affichage du total quantités
+document.querySelector("#totalQuantity").innerHTML = totalQty();
