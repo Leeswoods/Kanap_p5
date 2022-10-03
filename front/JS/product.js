@@ -58,61 +58,68 @@ let cartButton = document.getElementById ("addToCart");
 cartButton.addEventListener("click", (e) => {
 
 
-    // Créer une alerte si une couleur n'est pas séléctionner et si une quantité est égal à 0 et supérieur à 100
-    if (document.querySelector("#quantity").value == 0 || document.querySelector("#quantity").value > 100 && document.querySelector("#colors").value !== "") {
-        alert("Veuillez saisir une valeur");
+    // Créer une alerte si une couleur n'est pas séléctionner 
+    if (document.querySelector("#colors").value == "") {
+        alert("Veuillez saisir une couleur");
         e.preventDefault();
     }
-    else {
-        // Séléction de tous les éléemnts qui vont être dans le panier
-        let image = document.querySelector("body > main > div > section > article > div.item__img > img").src;
-        let imageAlt = document.querySelector("body > main > div > section > article > div.item__img > img").alt;
-        let name = document.getElementById("title").textContent;
-        let price = document.getElementById("price").textContent + "€";
-        let productID = idProduct;
-        let colorChoice = document. querySelector("#colors").value;
-        // Passe la quantité en nombre
-        let producQuantity = document.querySelector("#quantity").value;
-        let quantity = Number(producQuantity );
-
-        // Boucle pour permettre de savoir si on met le même produit dans le panier (même id + même couleur)
-        //pour tester la boucle et l'arreter
-        let boucle = 0;
-    
-        // LocalStorage =>
-
-        // ajout des élement du panier dans un tableau
-        let eltPanier = [{ image, imageAlt, name, price, productID, colorChoice, quantity }];
-
-        // On va vérifier si il y a quelque chose dans le localStorage 
-        let produitTableau = JSON.parse(localStorage.getItem("produit"));
-        
-        //Si le localstorage est vide, on créer tableau, on met tout les élément dans le panier (push) et on stock dans localStorage
-        if (!produitTableau) {
-            produitTableau= []; // Créaction du tableau
-            produitTableau.push(eltPanier); 
-            localStorage.setItem("produit", JSON.stringify(produitTableau));
+    else{
+        // Créer une alerte si une quantité est égal à 0 et supérieur à 100
+        if (document.querySelector("#quantity").value == 0 || document.querySelector("#quantity").value > 100) {
+            alert("Veuillez saisir une quantité supérieur à 0 et inférieur à 100");
+            e.preventDefault();
         }
-        // Avant de stock dans local storage => Lorsqu’on ajoute un produit au panier, si celui-ci était déjà présent dans le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l’array.
         else {
-            for (let i = 0; i < produitTableau.length; i++) {
-                if (produitTableau[i][0].name === name && produitTableau[i][0].colorChoice === colorChoice) {
-                    produitTableau[i][0].quantity += quantity;
-                    boucle = 1;
-                }
-            }
-            //Si pas égale (si pas même id et même couleur), on stop la boucle et on push le panier et on stock dans localStorage
-            if (boucle == 0) {
-                produitTableau.push(eltPanier);
-            }
+            // Séléction de tous les éléemnts qui vont être dans le panier
+            let image = document.querySelector("body > main > div > section > article > div.item__img > img").src;
+            let imageAlt = document.querySelector("body > main > div > section > article > div.item__img > img").alt;
+            let name = document.getElementById("title").textContent;
+            let price = document.getElementById("price").textContent + "€";
+            let productID = idProduct;
+            let colorChoice = document. querySelector("#colors").value;
+            // Passe la quantité en nombre
+            let producQuantity = document.querySelector("#quantity").value;
+            let quantity = Number(producQuantity );
+
+            // Boucle pour permettre de savoir si on met le même produit dans le panier (même id + même couleur)
+            //pour tester la boucle et l'arreter
+            let boucle = 0;
+        
+            // LocalStorage =>
+
+            // ajout des élement du panier dans un tableau
+            let eltPanier = [{ image, imageAlt, name, productID, colorChoice, quantity }];
+
+            // On va vérifier si il y a quelque chose dans le localStorage 
+            let produitTableau = JSON.parse(localStorage.getItem("produit"));
             
-            localStorage.setItem("produit", JSON.stringify(produitTableau));
-        }
-        // Alerte sur la quantité mise dans le panier
-        if (quantity > 1) {
-            alert(`Vous avez ajouté ${quantity} articles au panier`);
-        } else if (quantity == 1) {
-            alert(`Vous avez ajouté ${quantity} article au panier`);
+            //Si le localstorage est vide, on créer tableau, on met tout les élément dans le panier (push) et on stock dans localStorage
+            if (!produitTableau) {
+                produitTableau= []; // Créaction du tableau
+                produitTableau.push(eltPanier); 
+                localStorage.setItem("produit", JSON.stringify(produitTableau));
+            }
+            // Avant de stock dans local storage => Lorsqu’on ajoute un produit au panier, si celui-ci était déjà présent dans le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l’array.
+            else {
+                for (let i = 0; i < produitTableau.length; i++) {
+                    if (produitTableau[i][0].name === name && produitTableau[i][0].colorChoice === colorChoice) {
+                        produitTableau[i][0].quantity += quantity;
+                        boucle = 1;
+                    }
+                }
+                //Si pas égale (si pas même id et même couleur), on stop la boucle et on push le panier et on stock dans localStorage
+                if (boucle == 0) {
+                    produitTableau.push(eltPanier);
+                }
+                
+                localStorage.setItem("produit", JSON.stringify(produitTableau));
+            }
+            // Alerte sur la quantité mise dans le panier
+            if (quantity > 1) {
+                alert(`Vous avez ajouté ${quantity} articles au panier`);
+            } else if (quantity == 1) {
+                alert(`Vous avez ajouté ${quantity} article au panier`);
+            }
         }
     }
 });

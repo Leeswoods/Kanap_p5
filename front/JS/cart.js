@@ -14,6 +14,7 @@ let email = document.querySelector("#email");
 let messagePanierVide = document.querySelector("#cartAndFormContainer > h1");
 let messagePanier = document.querySelector("#cart__items");
 
+
 // Déclaration des Variables 
 
 // Etape 8 : Afficher un tableau récapitulatif des achats dans la page Panier
@@ -57,10 +58,8 @@ function afficherPanier() {
 }
 afficherPanier();
 
+
 // Etape 9 :  Gérer la modification et la suppression de produits dans la page Panier
-
-  
-
   
   
 // GERER LA SUPRESSION DE PRODUITS DANS LA PAGE PANIER  
@@ -92,7 +91,7 @@ function deleteProducts(e) {
   // Donc si la quantité est de 1 et qu'on la passe à 0 alors le produit
   // On envoie une alerte que la quantité a été modifié
   // On enregistre le panier dans le localStorage et on rafraichit la page
-  // Sinon on va chercher l'id totalQuantity et totalPrice
+  // Sinon on va chercher l'id totalQuantity et totalPrice pour les afficher
   // On enregistre le panier dans le localStorage et on rafraichit la page
 
 function getNewQty(e) {
