@@ -93,8 +93,25 @@ function displayProducts(data, productId, colorChoice, quantity) {
 
   // DOM => SETTINGS -> BOUTTON DELETE -> PARAGRAPHE SUPPRIMER
   let productDelete = document.createElement("p");
-      productDelete.classList.add = "deleteItem";
+      productDelete.classList.add("deleteItem");
       productDelete.innerHTML = "Supprimer";
+
+      // Supprimer un produit avec le bouton supprimer 
+      productDelete.addEventListener('click', (event) => {
+        event.preventDefault();
+        let ls = getBasket();
+        console.log(localStorage);
+    
+        const newCart = ls.filter(element => element.productId !== productId || element.colorChoice !== colorChoice);
+        console.log(newCart);
+        // envoie la variable dans le localStorage
+        localStorage.setItem("basket", JSON.stringify(newCart));
+    
+        // Creaction alerte 
+        alert("Ce produit a été supprimer du panier");
+        location.reload();
+        
+      })
   
   // APPENCHILD 
 
@@ -119,19 +136,26 @@ function displayProducts(data, productId, colorChoice, quantity) {
     // PUSH DANS LE DOM ===> Cart__items parent de productArticle
     document.querySelector("#cart__items").append(productArticle);
 
-
+    // Bouton supprimer 
+    document.querySelectorAll('.cart__item__content__settings__delete').forEach(element => {
+      element.append(productDelete)
+    })
   
   // AFFICHE LE TOTAL DU PRIX 
-  document.querySelector("#totalPrice").innerHTML = totalPrice(); 
+  document.querySelector("#totalPrice").innerHTML = totalPrice();
+
+  // AFFICHE LE TOTAL DE LA QUANTITE 
+  document.querySelector("#totalQuantity").innerHTML = totalQuantity();
 }
+
   
 // Calculer le total
 function totalPrice() {
 
+
   let totalPrice = 0;
   let items = document.getElementsByClassName("cart__item");
   for ( let i of items ) {
-    console.log(i);
     let productQuantity = i.querySelector('.itemQuantity').value;
 
     // Converti la string en number
@@ -153,28 +177,56 @@ function totalPrice() {
   return totalPrice;
 }
 
-
-
-
 // Calcul du total quantité(s)
 function totalQuantity() {
-let localStorage = getBasket();
-let totalQuantity = 0;
-for (let i = 0; i < localStorage.length; i++) {
-  let quantity = parseInt(localStorage[i].quantity);
-  totalQuantity += quantity;
+  let localStorage = getBasket();
+  let totalQuantity = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    let quantity = parseInt(localStorage[i].quantity);
+    totalQuantity += quantity;
+  }
+  return totalQuantity;
 }
-return totalQuantity;
-}
-// affichage du total quantités
-document.querySelector("#totalQuantity").innerHTML = totalQuantity();
+
+
+// console.log(getBasket());
+// PROBLEME SCOPE (PORTEE)
+// Supprimer un produit avec le bouton supprimer 
+// let deleteBtn = document.getElementsByClassName("deleteItem");
+// // console.log(deleteBtn);
+// for (let i = 0; i < deleteBtn.length; i++) {
+
+//   console.log(deleteBtn);
+
+//   let ls = getBasket();
+
+//   console.log(ls());
+//   deleteBtn[i].addEventListener("click", (event) => {
+
+//     console.log(getBasket());
+//     // let localStorage = getBasket();
+//     console.log(localStorage);
+
+//     localStorage = ls.filter(element => element.productId !== productId || element.colorChoice !== colorChoice);
+
+//     // envoie la variable dans le localStorage
+//     localStorage.setItem("basket", JSON.stringify(localStorage));
+
+//     // Creaction alerte 
+//     alert("Ce produit a été ssupprimer du panier");
+//     window.location.href = "cart.html";
+    
+//   })
+// } 
+// console.log(getBasket());
+
 
 // Cette fonction permet de déclarer le localStorage et l'API
 function getData() {
   
-
-
-
+  
+  
+  
   // Récupération des infos stocké dans le local storage
   let localStorage = getBasket();
   
@@ -200,8 +252,6 @@ function getData() {
 }
 getBasket(); // Affiche la fonction
 getData(); // Affiche la fonction
-
-
 
 
 
