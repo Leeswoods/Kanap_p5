@@ -1,5 +1,9 @@
 // Page Panier 
 
+// API URL 
+
+let site = "http://localhost:3000/api/products/";
+
 // // Déclaration des Variables formulaires
 // let submitBtn = document.querySelector("#order");
 // let firstName = document.querySelector("#firstName");
@@ -148,7 +152,25 @@ function displayProducts(data, productId, colorChoice, quantity) {
   document.querySelector("#totalQuantity").innerHTML = totalQuantity();
 }
 
-  
+
+
+// Modification Quantité 
+function modifyQuantityProduct() {
+  let itemQuantity = document.querySelectorAll("itemQuantity");
+  console.log(itemQuantity);
+
+  for (let p = 0; p < itemQuantity.length; p++) {
+    itemQuantity.addEventListener("change", function () {
+      basket.quantity = itemQuantity.value;
+      localStorage.setItem("basket", JSON.stringify(basket));
+      alert("La quantité a bien été modifier")
+      location.reload();
+    })
+  }
+}
+
+
+
 // Calculer le total
 function totalPrice() {
 
@@ -189,37 +211,6 @@ function totalQuantity() {
 }
 
 
-// console.log(getBasket());
-// PROBLEME SCOPE (PORTEE)
-// Supprimer un produit avec le bouton supprimer 
-// let deleteBtn = document.getElementsByClassName("deleteItem");
-// // console.log(deleteBtn);
-// for (let i = 0; i < deleteBtn.length; i++) {
-
-//   console.log(deleteBtn);
-
-//   let ls = getBasket();
-
-//   console.log(ls());
-//   deleteBtn[i].addEventListener("click", (event) => {
-
-//     console.log(getBasket());
-//     // let localStorage = getBasket();
-//     console.log(localStorage);
-
-//     localStorage = ls.filter(element => element.productId !== productId || element.colorChoice !== colorChoice);
-
-//     // envoie la variable dans le localStorage
-//     localStorage.setItem("basket", JSON.stringify(localStorage));
-
-//     // Creaction alerte 
-//     alert("Ce produit a été ssupprimer du panier");
-//     window.location.href = "cart.html";
-    
-//   })
-// } 
-// console.log(getBasket());
-
 
 // Cette fonction permet de déclarer le localStorage et l'API
 function getData() {
@@ -236,7 +227,7 @@ function getData() {
     let colorChoice = localStorage[i].colorChoice;
     let quantity = localStorage[i].quantity;
     // Récupérer les  données depuis l'API.
-    fetch(`http://localhost:3000/api/products/${productId}`)
+    fetch(site + `${productId}`)
     .then((res) => {
       return res.json();
     }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
@@ -254,6 +245,8 @@ getBasket(); // Affiche la fonction
 getData(); // Affiche la fonction
 
 
+
+// FORMULAIRE 
 
 
 

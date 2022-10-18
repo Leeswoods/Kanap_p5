@@ -16,33 +16,59 @@ let idProduct = params.get("id"); // permet à la variable IdProduct d'avoir l'i
 
 // Récupérer les  données depuis l'API.
 
-        //Créaction d'une constante
-const fetchProductId = async () => {
-    await fetch(page_produits + `/${idProduct}`) // Récupérer l'URL de l'API et l'id des produits qui est égal à params.get("id") identifié grâce au $
+        //Créaction d'une fonction
+function getItem() {
+    
+    // Introduction de l'id dans la requête
+    fetch(page_produits + `/${idProduct}`) // Récupérer l'URL de l'API et l'id des produits qui est égal à params.get("id") identifié grâce au $
     .then((res) => {
         return res.json();
     }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
+    
+    // Les données sont exportés et les caractéristiques du produits (couleur, nom, prix, etc..) sont affichés grâce ) la fonction "displayItem"
     .then((data) => {
-        return (products = data);
+        displayItem(data);
+        getProductForCart(data);
     }) // Permet de traiter la promesse 
+
+    // Permet d'afficher une alerte s'il y a un message d'erreur
+    .catch(function(error){
+        alert("Erreur de la requête");
+    })
 };
 
 
 // Etape 6 :  Insérer un produit et ses détails dans la page Produit
 
 // Affichage du produit
-const afficherLeProduit = async function () {
-    await fetchProductId();
-    let choixColor = document.querySelector("#colors");
-    document.querySelector(".item__img").innerHTML = `<img src="${products.imageUrl}" alt="${products.altTxt}">`;
-    document.getElementById("title").textContent = products.name;
-    document.getElementById("price").textContent = products.price;
-    document.getElementById("description").textContent = products.description;
-    products.colors.forEach((option) => {
-        choixColor.innerHTML += `<option value="${option}">${option}</option>`;
-    });
-};
-afficherLeProduit();
+function displayItem(article) {
+    
+    // Affichage de l'image 
+    let imgItem = document.createElement("img");
+    document.querySelector(".item__img").appendChild(imgItem);
+    imgItem.src = article.imageUrl;
+    imgItem.alt = article.altTxt;
+
+    // Affichage nom du produit 
+    document.querySelector("#title").innerHTML = article.name;
+
+    // Affichage du prix 
+    document.querySelector("#price").innerHTML = article.price;
+
+    // Affichage de la description
+    document.querySelector("#description").innerHTML = article.description;
+
+    // Affichage des différentes couleurs 
+    for(let color of article.colors){
+        let colorChoice = document.createElement("option");
+        document.querySelector("#colors").appendChild(colorChoice),
+        colorChoice.value = color;
+        colorChoice.innerHTML = color;
+    }
+}
+
+getItem(); // Appel à la fonction getItem
+
 
 
 
@@ -50,88 +76,62 @@ afficherLeProduit();
 
 // Etape 7 :  Ajouter des produits dans le panier
 
-// Permet d'enregsitrer le panier dans le localStorage / le JSON.stringify permet de transformer en chaîne de caractère
+function getProductForCart(product) {
+    
+    // Déclaration des variables 
+    const addBtn = document.querySelector("#addToCart");
+    const colorChoice = document.querySelector("#colors");
+    const quantity = document.querySelector("#quantity");
+
+    addBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const myProduct = {
+            name : product.name,
+            id : product._id,
+            colorChoice: colorChoice.value,
+            quantity: parseInt(quantity.value, 10)
+        };
+
+        // Créer une alerte si une couleur n'est pas séléctionner 
+        if (myProduct.colorChoice == "") {
+            alert("Veuillez saisir une couleur");
+        }
+        else{
+            // Créer une alerte si une quantité est égal à 0 et supérieur à 100 Ou inférieur à 0
+            if (myProduct.quantity <= 0 || myProduct.quantity > 100) {
+                alert("Veuillez saisir une quantité supérieur à 0 et inférieur à 100");
+            }
+            else {
+                let basket = JSON.parse(localStorage.getItem("basket"));
+                if(basket){
+
+                    // Même id et même couleur
+                    const foundProduct = basket.find(kanap => kanap.id == product._id && kanap.colorChoice == colorChoice.value)
+                    console.log(foundProduct);
+                    if(foundProduct){
+                        let finalQuantity = myProduct.quantity + foundProduct.quantity;
+                        console.log(finalQuantity);
+                        foundProduct.quantity = finalQuantity;
+                        console.log(foundProduct.quantity);
+                        saveBasket(basket)
+                    }
+                    else{
+                        basket.push(myProduct);
+                        saveBasket(basket);
+                    }
+                }
+                else{
+                    basket = [];
+                    basket.push(myProduct);
+                    saveBasket(basket);
+                }
+                alert(`Vous avez ajouté ${myProduct.quantity} articles au panier`);
+            }
+        }
+    })
+}
+
 function saveBasket(myProduct) {
+
     localStorage.setItem("basket", JSON.stringify(myProduct));
 }
-
-
-
-// On récupère l'item "basket" qu'on avait enregistrer en haut
-function getBasket() {
-    let basket = localStorage.getItem("basket");
-    // Si le panier est vide on crée un tableau
-    if (basket == null){
-        return [];
-    }
-    // Sinon on renvoie l'analyse de la chaîne de caractères "basket" 
-    else{
-        return JSON.parse(basket);
-    }
-}
-
-
-
-// Ajout au panier
-function addBasket(product) {
-    let basket = getBasket();
-    basket.push(product);
-    saveBasket(basket);
-}
-
-// Pour supprimer un élément du panier
-function removeFromBasket(product){
-    //on recupere le panier
-    let basket = getBasket();
-    // on utilise la methode filter filtre un array par rapport une condition
-    basket = basket.filter(p => p.id != product.id && p.colorChoice == product.colorChoice);
-    saveBasket(basket);
-}
-
-
-// Pour ajouter un produit dans le localStorage
-function addLocalStorage(myProduct) {
-    let basket = getBasket();
-
-    // Créer une alerte si une couleur n'est pas séléctionner 
-    if (myProduct.colorChoice == "") {
-        alert("Veuillez saisir une couleur");
-    }
-    else{
-        // Créer une alerte si une quantité est égal à 0 et supérieur à 100 Ou inférieur à 0
-        if (myProduct.quantity == 0 || myProduct.quantity > 100 || myProduct.quantity < 0) {
-            alert("Veuillez saisir une quantité supérieur à 0 et inférieur à 100");
-        }
-        else {
-            // Regarde s'il y a le même id et même couleur
-            let foundProduct = basket.find(product => product.id == myProduct.id && product.colorChoice == myProduct.colorChoice);
-
-            // Si produit ne correspond pas au même id et même couleur => on rajoute le produit dans la localStorage
-            if (foundProduct === undefined ) {
-                addBasket(myProduct)
-                alert(`Vous avez ajouté ${myProduct.quantity} articles au panier`);
-                return
-            }
-            // Sinon si le produit correspond au même id et même couleur on supprime le tableau et on rajoute la quantité ancienne et nouvelle
-            else {
-                removeFromBasket(foundProduct)
-                foundProduct.quantity += myProduct.quantity;
-                addBasket(foundProduct)
-                return
-            }
-        }
-    }
-}
-
-// Evènement lors du clique sur le bouton pour ajouter dans le panier 
-document.getElementById("addToCart").addEventListener("click", (e) => {
-    e.preventDefault();
-    // Séléction de tous les éléments qui vont être dans le panier
-    const myProduct = {
-        id : idProduct,
-        colorChoice : document.querySelector("#colors").value,
-        quantity : parseInt(document.querySelector("#quantity").value),
-        name : document.getElementById("title").textContent,
-    }
-    addLocalStorage(myProduct);
-})
