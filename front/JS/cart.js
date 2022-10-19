@@ -1,20 +1,24 @@
 // Page Panier 
 
-// API URL 
+// Déclaration des Variables formulaires
 
+
+// API URL 
 let site = "http://localhost:3000/api/products/";
 
-// // Déclaration des Variables formulaires
-// let submitBtn = document.querySelector("#order");
-// let firstName = document.querySelector("#firstName");
-// let lastName = document.querySelector("#lastName");
-// let address = document.querySelector("#address");
-// let city = document.querySelector("#city");
-// let email = document.querySelector("#email");
+// Varaible localStorage
+let products = JSON.parse(localStorage.getItem("basket"));
+
+// Variables Formulaire
+let submitBtn = document.querySelector("#order");
+let firstName = document.querySelector("#firstName");
+let lastName = document.querySelector("#lastName");
+let address = document.querySelector("#address");
+let city = document.querySelector("#city");
+let email = document.querySelector("#email");
 
 // Déclaration des Variables Page Panier 
 let messagePanierVide = document.querySelector("#cartAndFormContainer > h1");
-
 
 
 // On récupère l'item "basket" dans le localStorage
@@ -23,7 +27,7 @@ function getBasket() {
   let basket = localStorage.getItem("basket");
   // Si le panier est vide on crée un tableau
   if (basket == null){
-    messagePanierVide.innerHTML = " Votre panier est vide" ;
+    messagePanierVide.innerHTML = "Votre panier est vide" ;
       return [];
   }
   // Sinon on renvoie l'analyse de la chaîne de caractères "basket" 
@@ -32,32 +36,67 @@ function getBasket() {
   }
 }
 
-// Créaction du DOM
+// Cette fonction permet de déclarer le localStorage et l'API
+function getData() {
+  
+  
+  
+  
+  // Récupération des infos stocké dans le local storage
+  let localStorage = getBasket();
+  
+  //Créaction d'une boucle
+  for (let i = 0; i < localStorage.length; i++) {
+    let productId = localStorage[i].id;
+    let colorChoice = localStorage[i].colorChoice;
+    let quantity = localStorage[i].quantity;
+    // Récupérer les  données depuis l'API.
+    fetch(site + `${productId}`)
+    .then((res) => {
+      return res.json();
+    }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
+    .then((data) => {
+      displayProducts(data, productId, colorChoice, quantity);
+
+    })// Permet de traiter la promesse    
+  }
+  
+}
+getBasket(); // Affiche la fonction
+getData(); // Affiche la fonction
+
+// CREACTION DU DOM 
+
 // FONCTION POUR DEFINIR LES CLASS, ID, ETC...
 function displayProducts(data, productId, colorChoice, quantity) {
 
 
   // DOM => Article 
   let productArticle = document.createElement('article'); 
+
     productArticle.classList.add('cart__item');
     productArticle.setAttribute('data-id', `${productId}`);
     productArticle.setAttribute('data-color', `${colorChoice}`);
 
   // DOM => IMAGE
   let productDivImg = document.createElement("div");
+
     productDivImg.classList.add('cart__item__img');
 
   let productImg = document.createElement('img');
+
     productImg.src = `${data.imageUrl}`;
     productImg.setAttribute('alt', `${data.altTxt}`);
     productDivImg.appendChild(productImg);
 
   // DOM => Container : Description / SETTINGS 
   let productItemContent = document.createElement("div");
+
     productItemContent.classList.add('cart__item__content');
 
   // DOM => DESCRIPTION
   let productItemContentDescription = document.createElement("div");
+
     productItemContentDescription.classList.add('cart__item__content__description');
 
   // DOM => DESCRIPTION -> H2 TITRE / P / P
@@ -72,18 +111,22 @@ function displayProducts(data, productId, colorChoice, quantity) {
   
   // DOM => SETTINGS
   let productItemContentSettings = document.createElement("div");
+
     productItemContentSettings.classList.add('cart__item__content__settings');
 
   // DOM => SETTINGS -> QUANTITE 
   let productItemContentSettingsQuantity = document.createElement("div");
+
     productItemContentSettingsQuantity.classList.add('cart__item__content__settings__quantity');
 
   // DOM => SETTINGS -> QUANTITE -> PARAGRAPHE (TITRE) QUANTITE
   let productTitleQuantity = document.createElement("p");
+
     productTitleQuantity.innerHTML = "Quantité : ";
 
   // DOM => SETTINGS -> QUANTITE -> INPUT QUANTITE
   let productQuantity = document.createElement("input");
+
     productQuantity.value = `${quantity}`;
     productQuantity.classList.add("itemQuantity");
     productQuantity.setAttribute("type", "number");
@@ -93,29 +136,14 @@ function displayProducts(data, productId, colorChoice, quantity) {
 
   // DOM => SETTINGS -> BOUTTON DELETE
   let productItemContentSettingsDelete = document.createElement("div");
+
     productItemContentSettingsDelete.classList.add('cart__item__content__settings__delete');
 
   // DOM => SETTINGS -> BOUTTON DELETE -> PARAGRAPHE SUPPRIMER
   let productDelete = document.createElement("p");
+  
       productDelete.classList.add("deleteItem");
       productDelete.innerHTML = "Supprimer";
-
-      // Supprimer un produit avec le bouton supprimer 
-      productDelete.addEventListener('click', (event) => {
-        event.preventDefault();
-        let ls = getBasket();
-        console.log(localStorage);
-    
-        const newCart = ls.filter(element => element.productId !== productId || element.colorChoice !== colorChoice);
-        console.log(newCart);
-        // envoie la variable dans le localStorage
-        localStorage.setItem("basket", JSON.stringify(newCart));
-    
-        // Creaction alerte 
-        alert("Ce produit a été supprimer du panier");
-        location.reload();
-        
-      })
   
   // APPENCHILD 
 
@@ -150,26 +178,10 @@ function displayProducts(data, productId, colorChoice, quantity) {
 
   // AFFICHE LE TOTAL DE LA QUANTITE 
   document.querySelector("#totalQuantity").innerHTML = totalQuantity();
+
+  // Supprimer un produit 
+  deleteProduct();
 }
-
-
-
-// Modification Quantité 
-function modifyQuantityProduct() {
-  let itemQuantity = document.querySelectorAll("itemQuantity");
-  console.log(itemQuantity);
-
-  for (let p = 0; p < itemQuantity.length; p++) {
-    itemQuantity.addEventListener("change", function () {
-      basket.quantity = itemQuantity.value;
-      localStorage.setItem("basket", JSON.stringify(basket));
-      alert("La quantité a bien été modifier")
-      location.reload();
-    })
-  }
-}
-
-
 
 // Calculer le total
 function totalPrice() {
@@ -211,43 +223,35 @@ function totalQuantity() {
 }
 
 
+// Supprimer un produit du panier 
 
-// Cette fonction permet de déclarer le localStorage et l'API
-function getData() {
+function deleteProduct() {
   
-  
-  
-  
-  // Récupération des infos stocké dans le local storage
-  let localStorage = getBasket();
-  
-  //Créaction d'une boucle
-  for (let i = 0; i < localStorage.length; i++) {
-    let productId = localStorage[i].id;
-    let colorChoice = localStorage[i].colorChoice;
-    let quantity = localStorage[i].quantity;
-    // Récupérer les  données depuis l'API.
-    fetch(site + `${productId}`)
-    .then((res) => {
-      return res.json();
-    }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
-    .then((data) => {
-      displayProducts(data, productId, colorChoice, quantity);
+  // On récupère le panier dans la variable basket
+  let basket = getBasket();
 
-    })// Permet de traiter la promesse 
-    .then(() => {
-      totalPrice();
-    })    
+  // On séléctionne le bouton "Supprimer"
+  let deleteBtn = document.querySelectorAll(".deleteItem");
+
+  // Pour itérer sur tous les boutons supprimés. A la selection dans le DOM, le résultat est rendu sous forme d'un array
+  for(let b = 0; b < deleteBtn.length; b++){
+    deleteBtn[b].addEventListener("click", function(event){
+      event.preventDefault();
+
+      // On rajoute l'id et la couleur dans des variables
+      let removeProductId = basket[b].id;
+      let removeProductColor = basket[b].colorChoice;
+
+      // Ici filter() sert a garder uniquement les produits qui n'ont pas été sélectionnés 
+      // Si le produit sélectionner n'a pas le même id et même couleur => il ne sera pas supprimer 
+      const myNewCart = basket.filter(element => element.id !== removeProductId || element.colorChoice !== removeProductColor);
+
+      localStorage.setItem("basket", JSON.stringify(myNewCart));
+
+      alert("Ce produit a bien été supprimé du panier");
+
+      location.reload();
+
+    })
   }
-  
 }
-getBasket(); // Affiche la fonction
-getData(); // Affiche la fonction
-
-
-
-// FORMULAIRE 
-
-
-
-
