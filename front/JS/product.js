@@ -31,7 +31,7 @@ function getItem() {
         getProductForCart(data);
     }) // Permet de traiter la promesse 
 
-    // Permet d'afficher une alerte s'il y a un message d'erreur
+    // Permet d'afficher une alerte s'il y a une d'erreur
     .catch(function(error){
         alert("Erreur de la requête");
     })
@@ -83,8 +83,11 @@ function getProductForCart(product) {
     const colorChoice = document.querySelector("#colors");
     const quantity = document.querySelector("#quantity");
 
+    // Evènement lors du clique sur le bouton pour ajouter dans le panier
     addBtn.addEventListener("click", (e) => {
         e.preventDefault();
+
+        // Séléction de tous les éléments qui vont être dans le panier
         const myProduct = {
             name : product.name,
             id : product._id,
@@ -102,35 +105,59 @@ function getProductForCart(product) {
                 alert("Veuillez saisir une quantité supérieur à 0 et inférieur à 100");
             }
             else {
+
+                // On récupère l'item "basket" donc on récupère le panier
                 let basket = JSON.parse(localStorage.getItem("basket"));
+
+                // On va regarder si un produit est déjà dans le localStorage
+                // On met en paramètre de la condition "basket" qui contient le panier (localStorage)
                 if(basket){
 
-                    // Même id et même couleur
+                    // Même id et même couleur : On regarde si le produit qu'on séléctionne est déjà présent dans le localStorage
                     const foundProduct = basket.find(kanap => kanap.id == product._id && kanap.colorChoice == colorChoice.value)
-                    console.log(foundProduct);
+
+                    // Si le produit est déjà présent (Même id et même couleur), on additionne sa quantité à celle déjà présent dans le localStorage
                     if(foundProduct){
+
+                        // Additionne la quantité du produit actuelle à celle déjà présente dans le localStorage (même id & même couleur)
                         let finalQuantity = myProduct.quantity + foundProduct.quantity;
-                        console.log(finalQuantity);
+
+                        // La Quantité du produit trouver est égal à notre variable 
                         foundProduct.quantity = finalQuantity;
-                        console.log(foundProduct.quantity);
+
+                        // Sauvegarde le localStorage
                         saveBasket(basket)
                     }
                     else{
+
+                        // Sinon on push le produit dans le localStorage // Ajoute dans le tableau un produit
                         basket.push(myProduct);
+
+                        // Sauvegarde le localStorage
                         saveBasket(basket);
                     }
                 }
+                // Sinon, si le produit n'est pas dans le localStorage
                 else{
+
+                    // Créaction d'un tableau vide 
                     basket = [];
+
+                    // On push le produit dans le tableau vide 
                     basket.push(myProduct);
+
+                    // Sauvegarde le localStorage
                     saveBasket(basket);
                 }
+
+                // Alerte du nombre de quantité qu'on a ajouté dans le localStorage
                 alert(`Vous avez ajouté ${myProduct.quantity} articles au panier`);
             }
         }
     })
 }
 
+// Permet d'enregsitrer le panier dans le localStorage / le JSON.stringify permet de transformer en chaîne de caractère
 function saveBasket(myProduct) {
 
     localStorage.setItem("basket", JSON.stringify(myProduct));
