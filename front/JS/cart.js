@@ -26,7 +26,7 @@ function getBasket() {
   // Récupération des infos stocké dans le local storage
   let basket = localStorage.getItem("basket");
   // Si le panier est vide on crée un tableau
-  if (basket == null){
+  if (basket === null || basket == 0){
     messagePanierVide.innerHTML = "Votre panier est vide" ;
       return [];
   }
@@ -179,8 +179,11 @@ function displayProducts(data, productId, colorChoice, quantity) {
   // AFFICHE LE TOTAL DE LA QUANTITE 
   document.querySelector("#totalQuantity").innerHTML = totalQuantity();
 
-  // Supprimer un produit 
+  // Supprimer un produit => Appel la fonction
   deleteProduct();
+
+  // Modifier Quantité => Appel la fonction
+  changeQuantity();
 }
 
 // Calculer le total
@@ -230,28 +233,85 @@ function deleteProduct() {
   // On récupère le panier dans la variable basket
   let basket = getBasket();
 
-  // On séléctionne le bouton "Supprimer"
+  // On séléctionne les boutons "Supprimer"
   let deleteBtn = document.querySelectorAll(".deleteItem");
 
-  // Pour itérer sur tous les boutons supprimés. A la selection dans le DOM, le résultat est rendu sous forme d'un array
+  // Pour itérer (répéter) sur tous les boutons supprimés. A la selection dans le DOM, le résultat est rendu sous forme d'un array
   for(let b = 0; b < deleteBtn.length; b++){
     deleteBtn[b].addEventListener("click", function(event){
+
+      // Pour éviter de recharger la page quand on appuie sur le btn supprimer
       event.preventDefault();
 
       // On rajoute l'id et la couleur dans des variables
       let removeProductId = basket[b].id;
       let removeProductColor = basket[b].colorChoice;
 
-      // Ici filter() sert a garder uniquement les produits qui n'ont pas été sélectionnés 
-      // Si le produit sélectionner n'a pas le même id et même couleur => il ne sera pas supprimer 
+      // Avec la méthode filter je sélectionne les élements à garder et je supprime l'élément où le btn supprimer a été cliqué
       const myNewCart = basket.filter(element => element.id !== removeProductId || element.colorChoice !== removeProductColor);
 
+      // Sauvegarde dans le localStorage => on envoie la variable dans le localStorage
       localStorage.setItem("basket", JSON.stringify(myNewCart));
 
+      // Alerte pour avertir que le produit a été supprimer 
       alert("Ce produit a bien été supprimé du panier");
 
+      // Rechargement de la page
       location.reload();
 
+    })
+  }
+}
+
+// Modifier la quantité 
+
+function changeQuantity() {
+  
+  // On récupère le panier dans la variable basket
+  let basket = getBasket();
+
+  // On séléctionne les inputs 
+  const quantityItem = document.querySelectorAll(".itemQuantity");
+
+  // Pour répéter sur tous les inputs
+  for (let q = 0; q < quantityItem.length; q++){
+    quantityItem[q].addEventListener("change", () => {
+
+      // On rajoute la quantité qui se trouve dans le localStorage dans une variable
+      const oldQuantity = basket[q].quantity;
+
+      // On rajoute la nouvelle quantité dans une variable qui renvoie un nombre
+      const quantityChanged = quantityItem[q].valueAsNumber;
+
+      // Avec la méthode Find, on renvoie la valeur du premier élément trouvé dans le tableau qui respecte la condition donnée
+      const quantityControl = basket.find(element => element.quantityChanged !== oldQuantity);
+
+      // Condition : Si la quantité changé est supérieur ou égal à 1 
+      if(quantityChanged >= 1){
+
+        // On va changer de quantité => Nouvelle quantité 
+
+
+        // La nouvelle quantité trouvé est égal à la quantité changée // La quantité respecte la condition de la méthode find
+        quantityControl.quantity = quantityChanged;
+
+        // La Quantité dans mon localStorage est égal à la nouvelle quantité 
+        basket[q].quantity = quantityControl.quantity;
+      }
+      else{
+
+        // Sinon avec la méthode Filter je sélectionne une quantité supérieur à 1
+        basket.filter(element => element.quantity >= 1)
+      }
+
+      // Sauvegarde dans le localStorage 
+      localStorage.setItem("basket", JSON.stringify(basket));
+
+      // Alerte pour avertir que le produit a été supprimer 
+      alert("La quantité a été modifier");
+
+      // Rechargement de la page
+      location.reload();
     })
   }
 }
