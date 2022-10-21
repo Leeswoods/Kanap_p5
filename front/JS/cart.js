@@ -300,7 +300,7 @@ function changeQuantity() {
       }
       else{
 
-        // Sinon avec la méthode Filter je sélectionne une quantité supérieur à 1
+        // Sinon avec la méthode Filter le résultat attendu doit être égal ou supérieur à 1 quantité
         basket.filter(element => element.quantity >= 1)
       }
 
