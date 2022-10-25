@@ -9,13 +9,7 @@ let site = "http://localhost:3000/api/products/";
 // Varaible localStorage
 let products = JSON.parse(localStorage.getItem("basket"));
 
-// Variables Formulaire
-let submitBtn = document.querySelector("#order");
-let firstName = document.querySelector("#firstName");
-let lastName = document.querySelector("#lastName");
-let address = document.querySelector("#address");
-let city = document.querySelector("#city");
-let email = document.querySelector("#email");
+
 
 // Déclaration des Variables Page Panier 
 let messagePanierVide = document.querySelector("#cartAndFormContainer > h1");
@@ -315,3 +309,127 @@ function changeQuantity() {
     })
   }
 }
+
+
+// FORMULAIRE
+
+// Variables Formulaire
+let submitBtn = document.querySelector("#order");
+let firstName = document.querySelector("#firstName");
+let lastName = document.querySelector("#lastName");
+let address = document.querySelector("#address");
+let city = document.querySelector("#city");
+let email = document.querySelector("#email");
+
+// Fonction de Control User : Prénom, nom, email, etc...
+function userInformationControl() {
+  
+  // Contrôle Prénom / Variable qui appel l'élément du DOM message d'erreur : #firstNameErrorMsg
+  let fistNameValidation = document.querySelector("#firstNameErrorMsg");
+
+    // Evènement change de la variable (Variables Formulaire) fistName
+    firstName.addEventListener("change", (e) => {
+      
+      // Condition avec RegExp / Message erreur
+      
+      // Si le Prénom respect la condition, le prénom est validé
+      // Le e.target.valueest la propriété value d'un élément DOM, dans ce cas cela signifie le texte saisi dans l'entrée de recherche.
+      if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+        fistNameValidation.innerHTML = "";
+      }
+
+      // Sinon, message d'erreur, prénom non validé
+      else{
+        fistNameValidation.innerHTML = "Le prénom doit commencer par une majuscule et ne contenir que des lettres.";
+      }
+    })
+  
+  // Contrôle Nom / Variable qui appel l'élément du DOM message d'erreur : #addressErrorMsg
+  let lastNameValidation = document.querySelector("#lastNameErrorMsg");
+    
+    // Evènement change de la variable (Variables Formulaire) lastName
+    lastName.addEventListener("change", (e) => {
+
+      // Condition avec RegExp / Message erreur
+
+      // Si le Nom respect la condition, le nom est validé
+      if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+        lastNameValidation.innerHTML = "";
+      }
+
+      // Sinon, message d'erreur, nom non validé
+      else{
+        lastNameValidation.innerHTML = "Le nom doit commencer par une majuscule et ne contenir que des lettres.";
+      }
+
+    })
+  
+  
+  // Contrôle Adresse / Variable qui appel l'élément du DOM message d'erreur : #addressErrorMsg
+  let adressValidation = document.querySelector("#addressErrorMsg");
+
+    // Evènement change de la variable (Variables Formulaire) address
+    address.addEventListener("change", (e) => {
+
+      // Condition avec RegExp / Message erreur
+
+      // Si l'adresse respect la condition, l'adresse est validé
+      if (/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(e.target.value)) {
+        adressValidation.innerHTML = "";
+      }
+
+      // Sinon, message d'erreur, adresse non validé
+      else{
+        adressValidation.innerHTML = "Votre adresse est invalide";
+      }
+
+    })
+  
+  // Contrôle Ville / Variable qui appel l'élément du DOM message d'erreur : #cityErrorMsg
+  let cityValidation = document.querySelector("#cityErrorMsg");
+
+  // Evènement change de la variable (Variables Formulaire) city
+  city.addEventListener("change", (e) => {
+
+    // Condition avec RegExp / Message erreur
+
+    // Si l'adresse respect la condition, l'adresse est validé
+    if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+      cityValidation.innerHTML = "";
+    }
+
+    // Sinon, message d'erreur, adresse non validé
+    else{
+      cityValidation.innerHTML = "Vous devez renseigner une ville existante et qui commence par une majuscule";
+    }
+
+  })
+
+  // Contrôle Email / Variable qui appel l'élément du DOM message d'erreur : #emailErrorMsg
+  let emailValidation = document.querySelector("#emailErrorMsg");
+
+  // Evènement change de la variable (Variables Formulaire) email
+  email.addEventListener("change", (e) => {
+
+    // Condition avec RegExp / Message erreur
+
+    // Si l'adresse respect la condition, l'adresse est validé
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e.target.value)) {
+      emailValidation.innerHTML = "";
+    }
+
+    // Sinon, message d'erreur, adresse non validé
+    else{
+      emailValidation.innerHTML = "Adresse email incorrect";
+    }
+
+  })
+}
+
+userInformationControl(); // Appel de ma fonction userInformationControl
+
+
+
+// API, envoyer les données de l'utilisateur 
+
+
