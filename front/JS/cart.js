@@ -24,7 +24,6 @@ let products = JSON.parse(localStorage.getItem("basket"));
 function getBasket() {
   // Récupération des infos stocké dans le local storage
   let basket = localStorage.getItem("basket");
-  console.log(basket);
   // Si le panier est vide on crée un tableau
   if (basket === null || basket == 0){
     // messagePanierVide.innerHTML = "Votre panier est vide";
@@ -263,36 +262,63 @@ function deleteProduct() {
   }
 }
 
-// Modifier la quantité 
-
+// fonction qui gère les changements de quantité de les inputs
 function changeQuantity() {
 
-  // On récupère le panier dans la variable products
-  let products = getBasket();
+  // On récupère le panier dans la variable basket
+  let basket = JSON.parse(localStorage.getItem("basket"));
 
-  // modify the quantity of the product and update the total price of the cart when the quantity is modified
-  let itemQuantity = document.querySelectorAll(".itemQuantity");
+  // Sélection de tous les inputs
+  const quantity = document.querySelectorAll(".itemQuantity");
 
-  // Pour répéter sur tous les inputs
-  for (let k = 0; k < itemQuantity.length; k++) {
-    itemQuantity[k].addEventListener("change", function () {
+  // Boucle qui parcourt la quantité dans le DOM
+  for (let changeQuantity of quantity) {
+    changeQuantity.addEventListener("change", (e) => {
 
-      // La quantité changé est égal à la quantité du localStorage
-      products[k].quantity = itemQuantity[k].value;
+          // Boucle qui parcourt le produit dans le localStorage
+          for (products of basket) {
 
-      // Sauvegarde dans le localStorage la nouvelle quantité 
-      localStorage.setItem("basket", JSON.stringify(products));
+              // Récupère le DOM => toute la structrure d'article
+              let article = changeQuantity.closest("article");
 
-      // Alerte pour avertir que le produit a été supprimer 
-      alert("La quantité a été modifier");
+              // Condition 
+              // && renvoie vrai si et uniquement si ses deux opérandes sont true ou équivalents à true
+              // === Egalité Stricte 
+              // Faut que la valeur de l'évènement soit supérieur ou égal à 1 et inférieur ou égale à 100
 
-      // Appel Fonction pour le total prix et quantité 
-      totalPrice();
-      totalQuantity();
+              // Si sa respecte c'est condition alors : 
+              // La Quantité saisis est égale à celle de l'évènement => La fonction parseInt() analyse une chaîne de caractère fournie en argument et renvoie un entier exprimé dans une base donnée.
+              // Sauvegarde dans le localStorage la nouvelle quantité  
+              // La Quantité du DOM est égale à celle de l'évènement
+              // Alerte pour avertir que le produit a été modifier
 
-      // Rechargement de la page
-      location.reload();
-    });
+              // Sinon si : 
+              // La quantité est inférieur à 1 ou supérieur à 100 => alerte
+              // Renvoie la même valeur donc la valeur précédente
+              if (
+                  products.id === article.dataset.id &&
+                  article.dataset.color === products.colorChoice &&
+                  e.target.value >= 1 &&
+                  e.target.value <= 100
+              ) {
+                  products.quantity = parseInt(e.target.value);
+                  localStorage.basket = JSON.stringify(basket);
+                  article.dataset.quantité = parseInt(e.target.value);
+                  alert("La quantité a bien été modifier");
+              } else if (e.target.value < 1 || e.target.value > 100) {
+                  alert(
+                      "Indiquez des quantités comprises entre 1 et 100"
+                  );
+                  changeQuantity.value = article.dataset.quantité;
+              }
+          }
+          // Appel Fonction pour le total prix et quantité 
+          totalPrice();
+          totalQuantity();
+
+          // Rechargement de la page
+          location.reload();
+      });
   }
 }
 
