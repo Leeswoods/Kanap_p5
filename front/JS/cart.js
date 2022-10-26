@@ -1,7 +1,12 @@
 // Page Panier 
 
 // Déclaration des Variables formulaires
-
+let submitBtn = document.querySelector("#order");
+let firstName = document.querySelector("#firstName");
+let lastName = document.querySelector("#lastName");
+let address = document.querySelector("#address");
+let city = document.querySelector("#city");
+let email = document.querySelector("#email");
 
 // API URL 
 let site = "http://localhost:3000/api/products/";
@@ -12,16 +17,17 @@ let products = JSON.parse(localStorage.getItem("basket"));
 
 
 // Déclaration des Variables Page Panier 
-let messagePanierVide = document.querySelector("#cartAndFormContainer > h1");
+// let messagePanierVide = document.querySelector("#cartAndFormContainer > h1");
 
 
 // On récupère l'item "basket" dans le localStorage
 function getBasket() {
   // Récupération des infos stocké dans le local storage
   let basket = localStorage.getItem("basket");
+  console.log(basket);
   // Si le panier est vide on crée un tableau
   if (basket === null || basket == 0){
-    messagePanierVide.innerHTML = "Votre panier est vide" ;
+    // messagePanierVide.innerHTML = "Votre panier est vide";
       return [];
   }
   // Sinon on renvoie l'analyse de la chaîne de caractères "basket" 
@@ -260,66 +266,38 @@ function deleteProduct() {
 // Modifier la quantité 
 
 function changeQuantity() {
-  
-  // On récupère le panier dans la variable basket
-  let basket = getBasket();
 
-  // On séléctionne les inputs 
-  const quantityItem = document.querySelectorAll(".itemQuantity");
+  // On récupère le panier dans la variable products
+  let products = getBasket();
+
+  // modify the quantity of the product and update the total price of the cart when the quantity is modified
+  let itemQuantity = document.querySelectorAll(".itemQuantity");
 
   // Pour répéter sur tous les inputs
-  for (let q = 0; q < quantityItem.length; q++){
-    quantityItem[q].addEventListener("change", () => {
+  for (let k = 0; k < itemQuantity.length; k++) {
+    itemQuantity[k].addEventListener("change", function () {
 
-      // On rajoute la quantité qui se trouve dans le localStorage dans une variable
-      const oldQuantity = basket[q].quantity;
+      // La quantité changé est égal à la quantité du localStorage
+      products[k].quantity = itemQuantity[k].value;
 
-      // On rajoute la nouvelle quantité dans une variable qui renvoie un nombre
-      const quantityChanged = quantityItem[q].valueAsNumber;
-
-      // Avec la méthode Find, on renvoie la valeur du premier élément trouvé dans le tableau qui respecte la condition donnée
-      const quantityControl = basket.find(element => element.quantityChanged !== oldQuantity);
-
-      // Condition : Si la quantité changé est supérieur ou égal à 1 
-      if(quantityChanged >= 1){
-
-        // On va changer de quantité => Nouvelle quantité 
-
-
-        // La nouvelle quantité trouvé est égal à la quantité changée // La quantité respecte la condition de la méthode find
-        quantityControl.quantity = quantityChanged;
-
-        // La Quantité dans mon localStorage est égal à la nouvelle quantité 
-        basket[q].quantity = quantityControl.quantity;
-      }
-      else{
-
-        // Sinon avec la méthode Filter le résultat attendu doit être égal ou supérieur à 1 quantité
-        basket.filter(element => element.quantity >= 1)
-      }
-
-      // Sauvegarde dans le localStorage 
-      localStorage.setItem("basket", JSON.stringify(basket));
+      // Sauvegarde dans le localStorage la nouvelle quantité 
+      localStorage.setItem("basket", JSON.stringify(products));
 
       // Alerte pour avertir que le produit a été supprimer 
       alert("La quantité a été modifier");
 
+      // Appel Fonction pour le total prix et quantité 
+      totalPrice();
+      totalQuantity();
+
       // Rechargement de la page
       location.reload();
-    })
+    });
   }
 }
 
 
 // FORMULAIRE
-
-// Variables Formulaire
-let submitBtn = document.querySelector("#order");
-let firstName = document.querySelector("#firstName");
-let lastName = document.querySelector("#lastName");
-let address = document.querySelector("#address");
-let city = document.querySelector("#city");
-let email = document.querySelector("#email");
 
 // Fonction de Control User : Prénom, nom, email, etc...
 function userInformationControl() {
