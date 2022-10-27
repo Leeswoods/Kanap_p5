@@ -25,7 +25,7 @@ function getBasket() {
   // Récupération des infos stocké dans le local storage
   let basket = localStorage.getItem("basket");
   // Si le panier est vide on crée un tableau
-  if (basket === null || basket == 0){
+  if (basket === null){
     // messagePanierVide.innerHTML = "Votre panier est vide";
       return [];
   }
@@ -230,33 +230,31 @@ function totalQuantity() {
 function deleteProduct() {
   
   // On récupère le panier dans la variable basket
-  let basket = getBasket();
+  let basket = JSON.parse(localStorage.getItem("basket"));
 
   // On séléctionne les boutons "Supprimer"
   let deleteBtn = document.querySelectorAll(".deleteItem");
 
   // Pour itérer (répéter) sur tous les boutons supprimés. A la selection dans le DOM, le résultat est rendu sous forme d'un array
   for(let b = 0; b < deleteBtn.length; b++){
-    deleteBtn[b].addEventListener("click", function(event){
+    deleteBtn[b].addEventListener("click", function(){
 
-      // Pour éviter de recharger la page quand on appuie sur le btn supprimer
-      event.preventDefault();
+      // Alerte pour avertir que le produit va être supprimer
+      if (window.confirm("Voulez-vous supprimer cet article ?")) {
 
-      // On rajoute l'id et la couleur dans des variables
-      let removeProductId = basket[b].id;
-      let removeProductColor = basket[b].colorChoice;
+        // On rajoute l'id et la couleur dans des variables
+        let removeProductId = basket[b].id;
+        let removeProductColor = basket[b].colorChoice;
 
-      // Avec la méthode filter je sélectionne les élements à garder et je supprime l'élément où le btn supprimer a été cliqué
-      const myNewCart = basket.filter(element => element.id !== removeProductId || element.colorChoice !== removeProductColor);
+        // Avec la méthode filter je sélectionne les élements à garder et je supprime l'élément où le btn supprimer a été cliqué
+        const myNewCart = basket.filter(element => element.id !== removeProductId || element.colorChoice !== removeProductColor);
 
-      // Sauvegarde dans le localStorage => on envoie la variable dans le localStorage
-      localStorage.setItem("basket", JSON.stringify(myNewCart));
+        // Sauvegarde dans le localStorage => on envoie la variable dans le localStorage
+        localStorage.setItem("basket", JSON.stringify(myNewCart));
 
-      // Alerte pour avertir que le produit a été supprimer 
-      alert("Ce produit a bien été supprimé du panier");
-
-      // Rechargement de la page
-      location.reload();
+        // Rechargement de la page
+        location.reload();
+      }
 
     })
   }
@@ -324,6 +322,15 @@ function changeQuantity() {
 
 
 // FORMULAIRE
+
+// Stock si les inputs sont valides ou non
+// let verifValidInputs = {
+//   firstName: false,
+//   lastName: false,
+//   address: false,
+//   city: false,
+//   email: false,
+// };
 
 // Fonction de Control User : Prénom, nom, email, etc...
 function userInformationControl() {
@@ -430,10 +437,78 @@ function userInformationControl() {
   })
 }
 
-userInformationControl(); // Appel de ma fonction userInformationControl
-
-
 
 // API, envoyer les données de l'utilisateur 
 
+// Vérifications du formulaire et du panier
+// On va chercher l'ID du bouton & Ecoute du bonton "commander" 
+submitBtn.addEventListener("click", (e) => {
 
+  // On récupère la clé du Local Storage dans la variable basket
+  let basket = JSON.parse(localStorage.getItem("basket"));
+
+  // Appel de la Fonction getBasket
+  getBasket();
+
+  // Empêcher l'action par défaut
+  e.preventDefault();
+
+  // Condition 
+  // Si les Informations du formulaires sont correctements remplit et que le panier est différent de 0
+  if (firstName.value !== "" && lastName.value !== "" && address.value !== "" && city.value !== "" && email.value !== "" && basket.length != 0) 
+  {
+        // Variable qui renvoie un tableau 
+    let productsInfo = [];
+
+    // ajout de chaque id par produit dans un tableau produit
+    for (let i = 0; i < basket.length; i++) {
+      productsInfo.push(basket[i].id);
+    }
+
+    // Variable qui contient les informations de l'utilisateur 
+    const userInfo = {
+      contact: {
+          firstName: firstName.value,
+          lastName: lastName.value,
+          address: address.value,
+          city: city.value,
+          email: email.value,
+      },
+      products: productsInfo
+    }
+    const options = {
+      method: "POST",
+      body: JSON.stringify(userInfo),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    // fetch avec la constante qui contient la methode post "envoi"
+    // Envoie les information userInfo
+    fetch("http://localhost:3000/api/products/order", options)
+    .then((res) => {
+        if (res.status == 201) {
+            alert("Votre commande a bien été validée");
+            return res.json();
+        } else if (res.status !== 201) {
+            alert(
+                "une erreur est survenue lors de l'envoi du formulaire, veuillez réessayer"
+            );
+        }
+    })
+    .then((data) => {
+      // Ouvre la page de confirmation avec le numéro de commande dans l'URL
+      window.location.href = `../html/confirmation.html?order_id=${data.orderId}`;
+      // Vide le localStorage
+      localStorage.clear();
+    })
+    // Envoie l'erreur dans la console s'il y a une erreur
+    .catch((error) => console.log("Erreur : " + error));
+  } 
+  // Alerte si le formulaire n'est pas correctement remplit ou pas remplit et si le panier est vide
+  else {
+    alert("Veuillez remplit votre panier et/ou le formulaire")
+  }
+})
+
+userInformationControl(); // Appel de ma fonction userInformationControl
