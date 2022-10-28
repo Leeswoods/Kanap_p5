@@ -476,6 +476,7 @@ submitBtn.addEventListener("click", (e) => {
       },
       products: productsInfo
     }
+    // Constante qui contient la méthode post "envoi"
     const options = {
       method: "POST",
       body: JSON.stringify(userInfo),
@@ -487,6 +488,8 @@ submitBtn.addEventListener("click", (e) => {
     // Envoie les information userInfo
     fetch("http://localhost:3000/api/products/order", options)
     .then((res) => {
+      // Requête valide (succès) alerte pour informer la validation / 201 : Requête traitée avec succès et création d’un document.
+      // Sinon afficher message erreur
         if (res.status == 201) {
             alert("Votre commande a bien été validée");
             return res.json();
