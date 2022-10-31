@@ -501,7 +501,7 @@ submitBtn.addEventListener("click", (e) => {
   } 
   // Alerte si le formulaire n'est pas correctement remplit ou pas remplit et si le panier est vide
   else {
-    alert("Veuillez remplit votre panier et/ou le formulaire")
+    alert("Vous devez remplir votre panier et le formulaire")
   }
 })
 
