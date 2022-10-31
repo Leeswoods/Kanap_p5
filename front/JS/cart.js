@@ -323,15 +323,6 @@ function changeQuantity() {
 
 // FORMULAIRE
 
-// Stock si les inputs sont valides ou non
-// let verifValidInputs = {
-//   firstName: false,
-//   lastName: false,
-//   address: false,
-//   city: false,
-//   email: false,
-// };
-
 // Fonction de Control User : Prénom, nom, email, etc...
 function userInformationControl() {
   
