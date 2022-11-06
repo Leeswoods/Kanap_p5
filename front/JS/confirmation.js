@@ -5,4 +5,4 @@ let showOrderId = url.searchParams.get("order_id");
 
 
 // affichage du numéro de commande
-document.querySelector("#orderId").innerHTML = showOrderId;
+document.querySelector("#orderId").innerText = showOrderId;

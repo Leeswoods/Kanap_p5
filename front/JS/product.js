@@ -14,7 +14,7 @@ let idProduct = params.get("id"); // permet à la variable IdProduct d'avoir l'i
 // Etape 5 :  Récupérer l’id du produit à afficher
 
 
-// Récupérer les  données depuis l'API.
+// Récupérer les données depuis l'API.
 
         //Créaction d'une fonction
 function getItem() {
@@ -25,7 +25,7 @@ function getItem() {
         return res.json();
     }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
     
-    // Les données sont exportés et les caractéristiques du produits (couleur, nom, prix, etc..) sont affichés grâce ) la fonction "displayItem"
+    // Les données sont exportés et les caractéristiques du produits (couleur, nom, prix, etc..) sont affichés grâce la fonction "displayItem"
     .then((data) => {
         displayItem(data);
         getProductForCart(data);
@@ -50,20 +50,20 @@ function displayItem(article) {
     imgItem.alt = article.altTxt;
 
     // Affichage nom du produit 
-    document.querySelector("#title").innerHTML = article.name;
+    document.querySelector("#title").textContent = article.name;
 
     // Affichage du prix 
-    document.querySelector("#price").innerHTML = article.price;
+    document.querySelector("#price").textContent = article.price;
 
     // Affichage de la description
-    document.querySelector("#description").innerHTML = article.description;
+    document.querySelector("#description").textContent = article.description;
 
     // Affichage des différentes couleurs 
     for(let color of article.colors){
         let colorChoice = document.createElement("option");
         document.querySelector("#colors").appendChild(colorChoice),
         colorChoice.value = color;
-        colorChoice.innerHTML = color;
+        colorChoice.textContent = color;
     }
 }
 

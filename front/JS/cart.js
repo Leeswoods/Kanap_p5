@@ -26,10 +26,9 @@ function getBasket() {
   let basket = localStorage.getItem("basket");
   // Si le panier est vide on crée un tableau
   if (basket === null){
-    // messagePanierVide.innerHTML = "Votre panier est vide";
       return [];
   }
-  // Sinon on renvoie l'analyse de la chaîne de caractères "basket" 
+  // Sinon, il existe et on renvoie l'analyse de la chaîne de caractères "basket" 
   else{
       return JSON.parse(basket);
   }
@@ -37,9 +36,6 @@ function getBasket() {
 
 // Cette fonction permet de déclarer le localStorage et l'API
 function getData() {
-  
-  
-  
   
   // Récupération des infos stocké dans le local storage
   let localStorage = getBasket();
@@ -56,7 +52,6 @@ function getData() {
     }) // Créaction d'une Promise (Promesse) transforme cette promesse en .json  : la Promise est un objet qui fournit une fonction then qui sera exécutée quand le résultat aura été obtenu
     .then((data) => {
       displayProducts(data, productId, colorChoice, quantity);
-
     })// Permet de traiter la promesse    
   }
   
@@ -100,13 +95,13 @@ function displayProducts(data, productId, colorChoice, quantity) {
 
   // DOM => DESCRIPTION -> H2 TITRE / P / P
   let productTitle = document.createElement("h2");
-    productTitle.innerHTML = `${data.name}`;
+    productTitle.textContent = `${data.name}`;
   
   let productColor = document.createElement("p");
-    productColor.innerHTML = "Couleur : " + `${colorChoice}`;
+    productColor.textContent = "Couleur : " + `${colorChoice}`;
 
   let productPrice = document.createElement("p");
-    productPrice.innerHTML = `${data.price}` + " €";
+    productPrice.textContent = `${data.price}` + " €";
   
   // DOM => SETTINGS
   let productItemContentSettings = document.createElement("div");
@@ -121,7 +116,7 @@ function displayProducts(data, productId, colorChoice, quantity) {
   // DOM => SETTINGS -> QUANTITE -> PARAGRAPHE (TITRE) QUANTITE
   let productTitleQuantity = document.createElement("p");
 
-    productTitleQuantity.innerHTML = "Quantité : ";
+    productTitleQuantity.textContent = "Quantité : ";
 
   // DOM => SETTINGS -> QUANTITE -> INPUT QUANTITE
   let productQuantity = document.createElement("input");
@@ -142,7 +137,7 @@ function displayProducts(data, productId, colorChoice, quantity) {
   let productDelete = document.createElement("p");
   
       productDelete.classList.add("deleteItem");
-      productDelete.innerHTML = "Supprimer";
+      productDelete.textContent = "Supprimer";
   
   // APPENCHILD 
 
@@ -336,13 +331,13 @@ function userInformationControl() {
       
       // Si le Prénom respect la condition, le prénom est validé
       // Le e.target.valueest la propriété value d'un élément DOM, dans ce cas cela signifie le texte saisi dans l'entrée de recherche.
-      if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
-        fistNameValidation.innerHTML = "";
+      if (/^[A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+        fistNameValidation.innerText = "";
       }
 
       // Sinon, message d'erreur, prénom non validé
       else{
-        fistNameValidation.innerHTML = "Le prénom doit commencer par une majuscule et ne contenir que des lettres.";
+        fistNameValidation.innerText = "Le prénom doit commencer par une majuscule et ne contenir que des lettres.";
       }
     })
   
@@ -355,13 +350,13 @@ function userInformationControl() {
       // Condition avec RegExp / Message erreur
 
       // Si le Nom respect la condition, le nom est validé
-      if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
-        lastNameValidation.innerHTML = "";
+      if (/^[A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+        lastNameValidation.innerText = "";
       }
 
       // Sinon, message d'erreur, nom non validé
       else{
-        lastNameValidation.innerHTML = "Le nom doit commencer par une majuscule et ne contenir que des lettres.";
+        lastNameValidation.innerText = "Le nom doit commencer par une majuscule et ne contenir que des lettres.";
       }
 
     })
@@ -377,12 +372,12 @@ function userInformationControl() {
 
       // Si l'adresse respect la condition, l'adresse est validé
       if (/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(e.target.value)) {
-        adressValidation.innerHTML = "";
+        adressValidation.innerText = "";
       }
 
       // Sinon, message d'erreur, adresse non validé
       else{
-        adressValidation.innerHTML = "Votre adresse est invalide";
+        adressValidation.innerText = "Votre adresse est invalide";
       }
 
     })
@@ -396,13 +391,13 @@ function userInformationControl() {
     // Condition avec RegExp / Message erreur
 
     // Si l'adresse respect la condition, l'adresse est validé
-    if (/^[A-Z][A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
-      cityValidation.innerHTML = "";
+    if (/^[A-Za-z\é\è\ê\-]+$/.test(e.target.value)) {
+      cityValidation.innerText = "";
     }
 
     // Sinon, message d'erreur, adresse non validé
     else{
-      cityValidation.innerHTML = "Vous devez renseigner une ville existante et qui commence par une majuscule";
+      cityValidation.innerText = "Vous devez renseigner une ville existante et qui commence par une majuscule";
     }
 
   })
@@ -417,12 +412,12 @@ function userInformationControl() {
 
     // Si l'adresse respect la condition, l'adresse est validé
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(e.target.value)) {
-      emailValidation.innerHTML = "";
+      emailValidation.innerText = "";
     }
 
     // Sinon, message d'erreur, adresse non validé
     else{
-      emailValidation.innerHTML = "Adresse email incorrect";
+      emailValidation.innerText = "Adresse email incorrect";
     }
 
   })

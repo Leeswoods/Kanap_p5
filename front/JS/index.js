@@ -25,19 +25,22 @@ const lesProduits = document.querySelector("#items");
 
 //Affichage des produits sur la page d'acceuil
 async function afficherLesProduits() {
-    // attente que la constante fetchProducts se charge
+    // Attente que la constante fetchProducts se charge
     await fetchProducts();
     products.forEach((product) => {
-        lesProduits.innerHTML += `
+        lesProduits.insertAdjacentHTML(
+        "beforeend",
+        `
             <a href="./product.html?id=${product._id}">
             <article>
                 <img src="${product.imageUrl}" alt="${product.altTxt}" />
                 <h3 class="productName">${product.name}</h3>
                 <p class="productDescription">${product.description}</p>  
             </article>
-            </a>`;
+            </a>`
+        );
     });
 };
 
-afficherLesProduits(); // Affiche la fonction 
+afficherLesProduits(); // Appel de la fonction 
 
