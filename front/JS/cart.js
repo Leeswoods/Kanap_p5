@@ -171,7 +171,7 @@ function displayProducts(data, productId, colorChoice, quantity) {
   document.querySelector("#totalPrice").innerHTML = totalPrice();
 
   // AFFICHE LE TOTAL DE LA QUANTITE 
-  document.querySelector("#totalQuantity").innerHTML = totalQuantity();
+  document.querySelector("#totalQuantity").innerText = totalQuantity();
 
   // Supprimer un produit => Appel la fonction
   deleteProduct();
